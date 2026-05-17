@@ -1,72 +1,169 @@
-const express = require("express");
+const express = require('express')
 
-const router = express.Router();
+const router =
+  express.Router()
+
+/* CONTROLLER */
 
 const {
+
   login,
-  createUser,
-  getUsers,
-  getSingleUser,
-  updateUser,
-  deleteUser,
-} = require("./user.controller");
 
-const validate = require("../../middleware/validate.middleware");
+  createUser,
+
+  getUsers,
+
+  getSingleUser,
+
+  updateUser,
+
+  deleteUser
+
+} = require('./user.controller')
+
+/* MIDDLEWARE */
+
+const validate =
+  require('../../middleware/validate.middleware')
 
 const {
+
   protect,
-  adminOnly,
-} = require("../../middleware/auth.middleware");
 
-// router.post("/register", createUser);
+  adminOnly
 
+} = require('../../middleware/auth.middleware')
 
-// LOGIN
+/* MULTER */
+
+const multer =
+  require('multer')
+
+/* STORAGE */
+
+const storage =
+  multer.diskStorage({
+
+    destination:
+      (req, file, cb) => {
+
+        cb(
+          null,
+          'uploads/'
+        )
+
+      },
+
+    filename:
+      (req, file, cb) => {
+
+        cb(
+
+          null,
+
+          Date.now() +
+          '-' +
+          file.originalname
+
+        )
+
+      }
+
+  })
+
+/* UPLOAD */
+
+const upload =
+  multer({ storage })
+
+/* LOGIN */
+
 router.post(
-  "/login",
+
+  '/login',
+
   validate,
+
   login
-);
 
-// CREATE USER
+)
+
+/* CREATE USER */
+
 router.post(
-  "/create",
+
+  '/create',
+
   protect,
+
   adminOnly,
+
+  upload.single(
+    'profileImage'
+  ),
+
   createUser
-);
 
-// GET ALL USERS
+)
+
+/* GET ALL USERS */
+
 router.get(
-  "/",
+
+  '/',
+
   protect,
+
   adminOnly,
+
   getUsers
-);
 
-// GET SINGLE USER
+)
+
+/* GET SINGLE USER */
+
 router.get(
-  "/:id",
+
+  '/:id',
+
   protect,
+
   adminOnly,
+
   getSingleUser
-);
 
-// UPDATE USER
+)
+
+/* UPDATE USER */
+
 router.put(
-  "/:id",
+
+  '/:id',
+
   protect,
+
   adminOnly,
+
+  upload.single(
+    'profileImage'
+  ),
+
   updateUser
-);
 
+)
 
-// DELETE USER
+/* DELETE USER */
+
 router.delete(
-  "/:id",
-  protect,
-  adminOnly,
-  deleteUser
-);
 
-module.exports = router;
+  '/:id',
+
+  protect,
+
+  adminOnly,
+
+  deleteUser
+
+)
+
+module.exports = router
