@@ -2,72 +2,85 @@
 // IMPORTS
 // ==================================================
 
-const express =
-require("express");
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
 
-const cors =
-require("cors");
+// ==================================================
+// MIDDLEWARE
+// ==================================================
 
-const path =
-require("path");
+const errorMiddleware = require(
+  "./middleware/error.middleware"
+);
 
-const errorMiddleware =
-require("./middleware/error.middleware");
+// ==================================================
+// ROUTES IMPORT
+// ==================================================
+
+const authRoutes = require(
+  "./models/auth/auth.routes"
+);
+
+const userRoutes = require(
+  "./models/user/user.routes"
+);
+
+const leadRoutes = require(
+  "./models/lead/lead.routes"
+);
+
+const projectRoutes = require(
+  "./models/project/project.routes"
+);
+
+const clientRoutes = require(
+  "./models/client/client.routes"
+);
+
+const dashboardRoutes = require(
+  "./models/dashboard/dashboard.routes"
+);
+
+const reportRoutes = require(
+  "./models/reports/report.routes"
+);
+
+const followRoutes = require(
+  "./models/followup/follow.routes"
+);
+
 
 // ==================================================
 // APP
 // ==================================================
 
-const app =
-express();
-
-// ==================================================
-// REPORT ROUTES IMPORT
-// ==================================================
-
-const reportRoutes =
-require(
-  "./models/reports/report.routes"
-);
+const app = express();
 
 // ==================================================
 // CORS
 // ==================================================
 
 app.use(
-
   cors({
-
     origin: [
-
       "http://localhost:5173",
-
       "http://localhost:5174",
-
     ],
-
     credentials: true,
-
   })
-
 );
 
 // ==================================================
 // BODY PARSER
 // ==================================================
 
-app.use(
-  express.json()
-);
+app.use(express.json());
 
 app.use(
-
   express.urlencoded({
-
     extended: true,
-
   })
-
 );
 
 // ==================================================
@@ -75,129 +88,87 @@ app.use(
 // ==================================================
 
 app.use(
-
   "/uploads",
-
   express.static(
-
     path.join(
-
       __dirname,
-
       "uploads"
-
     )
-
   )
-
 );
 
 // ==================================================
 // API ROUTES
 // ==================================================
 
-/* AUTH */
+/* AUTH ROUTES */
 
 app.use(
-
   "/api/auth",
-
-  require(
-
-    "./models/auth/auth.routes"
-
-  )
-
+  authRoutes
 );
 
-/* USERS */
+/* USER ROUTES */
 
 app.use(
-
   "/api/users",
-
-  require(
-
-    "./models/user/user.routes"
-
-  )
-
+  userRoutes
 );
 
-/* LEADS */
+/* LEAD ROUTES */
 
 app.use(
-
   "/api/leads",
-
-  require(
-
-    "./models/lead/lead.routes"
-
-  )
-
+  leadRoutes
 );
 
-/* PROJECTS */
+/* PROJECT ROUTES */
 
 app.use(
-
   "/api/projects",
-
-  require(
-
-    "./models/project/project.routes"
-
-  )
-
+  projectRoutes
 );
 
-/* CLIENTS */
+
+
+/* CLIENT ROUTES */
 
 app.use(
-
   "/api/clients",
-
-  require(
-
-    "./models/client/client.routes"
-
-  )
-
+  clientRoutes
 );
 
-/* DASHBOARD */
+/* DASHBOARD ROUTES */
 
 app.use(
-
   "/api/dashboard",
-
-  require(
-
-    "./models/dashboard/dashboard.routes"
-
-  )
-
+  dashboardRoutes
 );
 
-/* REPORTS */
+/* REPORT ROUTES */
 
 app.use(
-
   "/api/reports",
-
   reportRoutes
-
 );
+
+/* FOLLOWUP ROUTES */
+
+app.use(
+  "/api/followups",
+  followRoutes
+);
+app.use(
+'/api/users',
+userRoutes
+)
 
 // ==================================================
 // TEST ROUTE
 // ==================================================
 
 app.get(
-
   "/",
-
   (req, res) => {
 
     res.status(200).json({
@@ -210,15 +181,13 @@ app.get(
     });
 
   }
-
 );
 
 // ==================================================
-// 404 HANDLER
+// 404 ROUTE HANDLER
 // ==================================================
 
 app.use(
-
   (req, res) => {
 
     res.status(404).json({
@@ -231,7 +200,6 @@ app.use(
     });
 
   }
-
 );
 
 // ==================================================
@@ -243,7 +211,7 @@ app.use(
 );
 
 // ==================================================
-// EXPORT
+// EXPORT APP
 // ==================================================
 
 module.exports = app;
